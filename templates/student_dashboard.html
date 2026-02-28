@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Student Dashboard</h2>
+  <div>
+    <a class="btn btn-outline-light" href="{{ url_for('index') }}">Refresh</a>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card bg-dark border-light p-3">
+      <h5 class="text-light">Your Enrollments</h5>
+      {% for e in enrolls %}
+        <div class="p-2 mb-2 bg-secondary rounded">
+          <div class="fw-bold">{{ e.slot.subject.name }}</div>
+          <div class="small text-muted">Day {{ e.slot.day_of_week }} • {{ e.slot.start_time.strftime('%H:%M') }}-{{ e.slot.end_time.strftime('%H:%M') }}</div>
+        </div>
+      {% else %}
+        <div class="text-muted">No enrollments yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card bg-dark border-light p-3">
+      <h5 class="text-light">Available Slots</h5>
+      {% for s in slots %}
+        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-secondary rounded">
+          <div>
+            <div class="fw-bold text-white">{{ s.subject.name }} ({{ s.subject.code }})</div>
+            <div class="small text-muted">Day {{ s.day_of_week }} • {{ s.start_time.strftime('%H:%M') }}-{{ s.end_time.strftime('%H:%M') }}</div>
+            <div class="small text-muted">Teacher: {{ s.teacher.user.full_name if s.teacher and s.teacher.user else '—' }} • Room: {{ s.classroom.code if s.classroom else '—' }}</div>
+          </div>
+          <div>
+            <form method="post" action="{{ url_for('enroll') }}">
+              <input type="hidden" name="slot_id" value="{{ s.id }}">
+              <button class="btn btn-primary btn-sm">Enroll</button>
+            </form>
+            <div class="text-center mt-1 small text-muted">{{ s.current_enrollment or 0 }} / {{ s.max_capacity }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<!-- Student Timetable Grid -->
+<div class="card bg-dark border-light p-3">
+  <h5 class="text-light">Your Timetable</h5>
+  <table class="table table-bordered table-dark text-center align-middle">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hour in range(8,19) %}
+      <tr>
+        <th>{{ "%02d:00"%(hour) }} - {{ "%02d:00"%(hour+1) }}</th>
+        {% for day in range(1,6) %}
+          <td>
+            {% for s in enrolls %}
+              {% if s.slot.day_of_week==day and s.slot.start_time.hour<=hour < s.slot.end_time.hour %}
+                <div class="bg-success text-white rounded p-1 mb-1">
+                  {{ s.slot.subject.code }}<br>{{ s.slot.teacher.user.full_name }}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

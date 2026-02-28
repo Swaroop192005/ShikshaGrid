@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ShikshaGrid</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/dark.css') }}" rel="stylesheet">
+    <style>
+      /* Crazy vibrant gradients for cards */
+      .card.bg-dark {
+        background: linear-gradient(135deg, #112e72, #758eb9);
+        border: 2px solid #4ade80;
+      }
+      .table-dark th, .table-dark td {
+        vertical-align: middle;
+      }
+      .timetable-block {
+        border-radius: 6px;
+        padding: 3px;
+        font-size: 0.85rem;
+        color: #fff;
+        margin-bottom: 2px;
+        text-align: center;
+      }
+      /* Color palette for subjects */
+      .subject-0 { background: #ef4444; }
+      .subject-1 { background: #e2b465; }
+      .subject-2 { background: #10b981; }
+      .subject-3 { background: #3b82f6; }
+      .subject-4 { background: #8b5cf6; }
+    </style>
+  </head>
+  <body class="bg-dark text-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg,#3a4a6e,#051b3d);">
+      <div class="container">
+         <a><img src="{{ url_for('static', filename='calendar4-range.svg') }}" alt="Move It icon" height="30">  ShikshaGrid</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            {% if current_user.is_authenticated %}
+              <li class="nav-item me-2"><span class="nav-link text-white fw-bold">{{ current_user.full_name }}</span></li>
+              <li class="nav-item"><a class="btn btn-outline-light btn-sm" href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Container -->
+    <div class="container my-4">
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+            <div class="alert alert-{{ 'primary' if cat=='info' else cat }} alert-dismissible fade show shadow-lg" role="alert">
+              {{ msg }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- Main content -->
+      {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Optional: dark/light toggle script
+      const toggleTheme = () => {
+        document.body.classList.toggle('bg-dark');
+        document.body.classList.toggle('text-light');
+      };
+    </script>
+  </body>
+</html>

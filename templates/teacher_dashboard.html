@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Teacher Dashboard</h2>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card p-3 text-dark">
+      <h6>Total Slots Assigned</h6>
+      <h3>{{ slots|length }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 text-dark">
+      <h6>Total Students</h6>
+      <h3>{{ slots|sum(attribute='current_enrollment') or 0 }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 text-dark">
+      <h6>Average Students per Slot</h6>
+      <h3>
+        {% if slots|length > 0 %}
+          {{ (slots|sum(attribute='current_enrollment') / slots|length)|round(1) }}
+        {% else %}
+          0
+        {% endif %}
+      </h3>
+    </div>
+  </div>
+</div>
+
+<!-- Timetable Grid -->
+<div class="table-responsive mb-4">
+  <table class="table table-bordered text-center align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Time / Day</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hour in range(8, 18) %}
+        <tr>
+          <th>{{ "%02d:00" % hour }} - {{ "%02d:00" % (hour+1) }}</th>
+          {% for day in range(1,6) %}
+            <td>
+              {% for s in slots %}
+                {% if s.day_of_week == day and s.start_time.hour == hour %}
+                  <div class="slot-block subject-{{ s.subject.id % 5 }} mb-1 p-1 rounded">
+                    <strong>{{ s.subject.code }}</strong><br>
+                    {{ s.classroom.code if s.classroom else '—' }}<br>
+                    Students: {{ s.current_enrollment or 0 }}/{{ s.max_capacity }}
+                    <button class="btn btn-sm btn-outline-dark mt-1" data-bs-toggle="modal" data-bs-target="#enrollModal{{ s.id }}">View Students</button>
+                  </div>
+
+                  <!-- Modal for enrolled students -->
+                  <div class="modal fade" id="enrollModal{{ s.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">{{ s.subject.name }} - Enrolled Students</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                          {% set enrolled_students = s.enrollments %}
+                          {% if enrolled_students %}
+                            <ul class="list-group">
+                              {% for e in enrolled_students %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                  {{ e.student.user.full_name }} ({{ e.student.roll_no }})
+                                  <span class="badge bg-primary">{{ e.student.batch }}</span>
+                                </li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <p>No students enrolled yet.</p>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

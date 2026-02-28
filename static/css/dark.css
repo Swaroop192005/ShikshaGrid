@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root{
+  --bg-1:#294a8d;
+  --bg-2:#6f7580;
+  --card:#0b1228;
+  --muted:#9aa5b1;
+  --accent:#7c3aed;
+  --accent-2:#06b6d4;
+}
+body{
+  background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  color: #e6eef8;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+.card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); border-radius:12px; }
+.btn-primary { background: linear-gradient(90deg,var(--accent),#5b21b6); border: none; box-shadow: 0 6px 18px rgba(124,58,237,0.12); }
+.btn-outline-light { border-color: rgba(255,255,255,0.08); color: #cfe9ff; }
+.navbar-brand { letter-spacing: 0.4px; }
+.list-group-item { background: transparent; border: none; color: var(--muted); }
+.bg-secondary { background: rgba(255,255,255,0.03) !important; }
+.text-muted { color: var(--muted) !important; }
+
+/* Login Card Gradient & Shadow */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+/* Input Styling */
+input.form-control {
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 12px 15px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+input.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  background: rgba(255,255,255,0.05);
+}
+
+/* Button Hover Effects */
+.btn-primary:hover {
+  background: linear-gradient(90deg, #7c3aed, #9333ea);
+  box-shadow: 0 8px 22px rgba(124,58,237,0.3);
+  transform: translateY(-2px);
+}
+.btn-outline-light:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--accent-2);
+  transform: translateY(-2px);
+}
+
+/* Small Text & Links */
+.text-muted {
+  color: var(--muted) !important;
+  font-size: 0.875rem;
+}
+
+/* Timetable Slot Styling */
+.slot-block {
+  background: linear-gradient(90deg, rgba(99,102,241,0.15), rgba(147,51,234,0.15));
+  color: #f8fafc;
+  border-left: 4px solid #6366f1;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.slot-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Subject Colors for variety */
+.subject-0 { background: linear-gradient(90deg, rgba(254,243,199,0.2), rgba(254,252,232,0.1)); border-color: #f59e0b; color: #111827; }
+.subject-1 { background: linear-gradient(90deg, rgba(237,233,254,0.2), rgba(243,240,255,0.1)); border-color: #8b5cf6; color: #111827; }
+.subject-2 { background: linear-gradient(90deg, rgba(209,250,229,0.2), rgba(237,253,245,0.1)); border-color: #10b981; color: #111827; }
+.subject-3 { background: linear-gradient(90deg, rgba(254,226,226,0.2), rgba(255,243,244,0.1)); border-color: #ef4444; color: #111827; }
+.subject-4 { background: linear-gradient(90deg, rgba(207,250,254,0.2), rgba(236,254,255,0.1)); border-color: #06b6d4; color: #111827; }
+
+/* Timetable Table */
+.table td, .table th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table th {
+  background-color: rgba(255,255,255,0.05);
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+.table-bordered td, .table-bordered th {
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Modal Enhancements */
+.modal-content {
+  background-color: #0f1724;
+  color: #f8fafc;
+  border-radius: 12px;
+}
+
+.list-group-item {
+  background-color: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 4px;
+  border-radius: 8px;
+}
+

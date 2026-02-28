@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="col-md-5 col-lg-4">
+    <div class="card shadow-lg p-4">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-white">Welcome Back</h2>
+        <p class="text-muted small">Sign in to access ShikshaGrid</p>
+      </div>
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input name="email" type="email" class="form-control form-control-lg bg-transparent text-white" placeholder="you@example.com" required>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Password</label>
+          <input name="password" type="password" class="form-control form-control-lg bg-transparent text-white" placeholder="••••••••" required>
+        </div>
+        <button class="btn btn-primary w-100 btn-lg mb-2">Login</button>
+        <a class="btn btn-outline-light w-100 btn-lg" href="{{ url_for('register') }}">Register</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

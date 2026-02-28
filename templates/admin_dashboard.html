@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+  <h2>Admin Dashboard</h2>
+  <div class="mb-2">
+    <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addSubjectModal">Add Subject</button>
+    <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#addTeacherModal">Add Teacher</button>
+    <button class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#addClassroomModal">Add Classroom</button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSlotModal">Add Slot</button>
+  </div>
+</div>
+
+<!-- TIMETABLE GRID -->
+<div class="card bg-dark border-light p-3 mb-4">
+  <h5 class="mb-3">Weekly Timetable</h5>
+  <table class="table table-dark table-bordered text-center align-middle">
+    <thead>
+      <tr>
+        <th>Time</th>
+        {% for day in ['Mon','Tue','Wed','Thu','Fri'] %}
+        <th>{{ day }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% set times = ['09:00','11:00','13:00','15:00','17:00'] %}
+      {% for t in times %}
+<tr>
+  <td>{{ t }}</td>
+  {% for d in range(1,6) %}
+    {% set slot = timetable[d].get(t) %}
+    {% if slot %}
+      <td class="timetable-block subject-{{ slot.subject.id % 5 }}">
+        <strong>{{ slot.subject.code }}</strong><br>
+        {{ slot.classroom.code if slot.classroom else '—' }}<br>
+        {{ slot.teacher.user.full_name if slot.teacher else '—' }}<br>
+        <small>{{ slot.current_enrollment or 0 }}/{{ slot.max_capacity }}</small>
+      </td>
+    {% else %}
+      <td></td>
+    {% endif %}
+  {% endfor %}
+</tr>
+{% endfor %}
+
+    </tbody>
+  </table>
+</div>
+
+<!-- MODALS -->
+<!-- Add Subject -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ url_for('add_subject') }}">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Subject</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input class="form-control mb-2" name="code" placeholder="Subject Code" required>
+        <input class="form-control" name="name" placeholder="Subject Name" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success">Add Subject</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Teacher -->
+<div class="modal fade" id="addTeacherModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ url_for('add_teacher') }}">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Teacher</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input class="form-control mb-2" name="full_name" placeholder="Full Name" required>
+        <input class="form-control mb-2" name="email" placeholder="Email" type="email" required>
+        <input class="form-control mb-2" name="department" placeholder="Department" required>
+        <input class="form-control" name="password" placeholder="Password" type="password" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-warning">Add Teacher</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Classroom -->
+<div class="modal fade" id="addClassroomModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ url_for('add_classroom') }}">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Classroom</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input class="form-control mb-2" name="code" placeholder="Classroom Code" required>
+        <input class="form-control" name="capacity" placeholder="Capacity" type="number" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-info">Add Classroom</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Slot -->
+<div class="modal fade" id="addSlotModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post" action="{{ url_for('add_slot') }}">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Slot</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <select class="form-select mb-2" name="subject_id" required>
+          <option value="">Select Subject</option>
+          {% for sub in subjects %}<option value="{{ sub.id }}">{{ sub.code }} — {{ sub.name }}</option>{% endfor %}
+        </select>
+        <select class="form-select mb-2" name="teacher_id" required>
+          <option value="">Select Teacher</option>
+          {% for t in teachers %}<option value="{{ t.id }}">{{ t.user.full_name }}</option>{% endfor %}
+        </select>
+        <select class="form-select mb-2" name="classroom_id" required>
+          <option value="">Select Classroom</option>
+          {% for c in classrooms %}<option value="{{ c.id }}">{{ c.code }} ({{ c.capacity }})</option>{% endfor %}
+        </select>
+        <select class="form-select mb-2" name="day_of_week" required>
+          <option value="">Select Day</option>
+          <option value="1">Monday</option><option value="2">Tuesday</option>
+          <option value="3">Wednesday</option><option value="4">Thursday</option>
+          <option value="5">Friday</option>
+        </select>
+        <input class="form-control mb-2" name="start_time" type="time" required>
+        <input class="form-control mb-2" name="end_time" type="time" required>
+        <input class="form-control" name="max_capacity" type="number" placeholder="Max Capacity" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary">Add Slot</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
